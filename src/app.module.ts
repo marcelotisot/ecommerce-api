@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { SeedModule } from './seed/seed.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -29,7 +30,9 @@ import { SeedModule } from './seed/seed.module';
 
     ProductsModule,
 
-    SeedModule
+    SeedModule,
+
+    UsersModule
   ],
   controllers: [],
   providers: [],
