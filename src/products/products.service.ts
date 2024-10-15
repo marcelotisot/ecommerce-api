@@ -105,6 +105,27 @@ export class ProductsService {
     await this.productRepo.save(product);
   }
 
+  /*
+  * Eliminar todos los registros
+  * -------------------------------------------------
+  * Se va a usar para vaciar la tabla antes de insertar
+  * datos de prueba con el seeder
+  */
+  async deleteAllProducts() {
+    const query = this.productRepo.createQueryBuilder('product');
+
+    try {
+      
+      return await query
+        .delete()
+        .where({})
+        .execute();
+
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
   // Manejo de errores
   private handleDBExceptions(error: any) {
     if (error.code === '23505')

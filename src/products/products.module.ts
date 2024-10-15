@@ -12,5 +12,9 @@ import { CategoriesModule } from '../categories/categories.module';
   ],
   controllers: [ProductsController],
   providers: [ProductsService],
+  exports: [
+    ProductsService, 
+    TypeOrmModule
+  ],
 })
 export class ProductsModule {}

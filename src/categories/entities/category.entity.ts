@@ -18,7 +18,6 @@ export class Category {
   @Column({
     name: 'category_name',
     unique: true,
-    length: 30,
     nullable: false
   })
   categoryName: string;

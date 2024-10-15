@@ -83,6 +83,27 @@ export class CategoriesService {
     await this.categoryRepo.save(category);
   }
 
+  /*
+  * Eliminar todos los registros
+  * -------------------------------------------------
+  * Se va a usar para vaciar la tabla antes de insertar
+  * datos de prueba con el seeder
+  */
+  async deleteAllCategories() {
+    const query = this.categoryRepo.createQueryBuilder('category');
+
+    try {
+      
+      return await query
+        .delete()
+        .where({})
+        .execute();
+
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
   // Manejo de errores
   private handleDBExceptions(error: any) {
     if (error.code === '23505')
