@@ -7,6 +7,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
 import { SeedModule } from './seed/seed.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -32,7 +33,9 @@ import { UsersModule } from './users/users.module';
 
     SeedModule,
 
-    UsersModule
+    UsersModule,
+
+    AuthModule
   ],
   controllers: [],
   providers: [],

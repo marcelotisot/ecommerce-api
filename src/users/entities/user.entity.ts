@@ -31,7 +31,10 @@ export class User {
   email: string;
 
   @Column({
-    nullable: false
+    nullable: false,
+
+    // Excluye el password de las busquedas
+    select: false  
   })
   password: string;
 
