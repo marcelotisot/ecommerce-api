@@ -2,9 +2,12 @@ import {
   Column, 
   CreateDateColumn, 
   Entity, 
+  OneToMany, 
   PrimaryGeneratedColumn, 
   UpdateDateColumn 
 } from "typeorm";
+
+import { Product } from "src/products/entities/product.entity";
 
 @Entity({ name: 'categories' })
 export class Category {
@@ -29,6 +32,12 @@ export class Category {
 
   @Column({ default: false })
   deleted: boolean;
+
+  @OneToMany(
+    () => Product,
+    (product) => product.category
+  )
+  products?: Product[];
 
   @CreateDateColumn({
     type: 'timestamp',

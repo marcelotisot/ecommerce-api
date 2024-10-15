@@ -4,9 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Modulos
 import { CategoriesModule } from './categories/categories.module';
-
-// Entidades
-import { Category } from './categories/entities/category.entity';
+import { ProductsModule } from './products/products.module';
 
 @Module({
   imports: [
@@ -21,12 +19,14 @@ import { Category } from './categories/entities/category.entity';
       database: process.env.DB_NAME,
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
-      entities: [ Category ],
+      autoLoadEntities: true,
       synchronize: true,
       retryAttempts: 3,
     }),
 
-    CategoriesModule
+    CategoriesModule,
+
+    ProductsModule
   ],
   controllers: [],
   providers: [],
