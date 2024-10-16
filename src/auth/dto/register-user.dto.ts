@@ -1,6 +1,7 @@
 import { 
   IsEmail, 
   IsNotEmpty, 
+  IsOptional, 
   IsString, 
   Matches, 
   MinLength 
@@ -28,4 +29,7 @@ export class RegisterUserDto {
     message: 'The password must have a Uppercase, lowercase letter and a number'
   })
   readonly password: string;
+
+  @IsOptional()
+  readonly isAdmin?: boolean;
 }

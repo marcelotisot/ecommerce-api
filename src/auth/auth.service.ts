@@ -13,6 +13,7 @@ import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
 import * as argon from 'argon2';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { ValidRoles } from './enums/valid-roles.enum';
 
 @Injectable()
 export class AuthService {
@@ -27,38 +28,47 @@ export class AuthService {
 
   async register(registerUserDto: RegisterUserDto) {
 
-      // Comprobar si ya existe un usuario con el correo enviado
-      const userExists = await this.userRepo.findOneBy({ email: registerUserDto.email });
+    const { isAdmin } = registerUserDto;
 
-      if ( userExists )
-        throw new BadRequestException(`User with email ${registerUserDto.email} already exists`);
+    // Comprobar si ya existe un usuario con el correo enviado
+    const userExists = await this.userRepo.findOneBy({ email: registerUserDto.email });
 
-      if ( !userExists ) {
-        // Encriptar password
-        const hash = await argon.hash(registerUserDto.password);
-        
-        const user = this.userRepo.create({
-          firstName: registerUserDto.firstName,
-          lastName: registerUserDto.lastName,
-          email: registerUserDto.email,
-          password: hash
-        });
+    if ( userExists )
+      throw new BadRequestException(`User with email ${registerUserDto.email} already exists`);
 
-        await this.userRepo.save(user);
+    if ( !userExists ) {
+      // Encriptar password
+      const hash = await argon.hash(registerUserDto.password);
+      
+      const user = this.userRepo.create({
+        firstName: registerUserDto.firstName,
+        lastName: registerUserDto.lastName,
+        email: registerUserDto.email,
+        password: hash
+      });
 
-        // Generar JWT
-        const payload: JwtPayload = {
-          id: user.id,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email
-        }
-
-        return {
-          ...user,
-          token: this.generateJwtToken( payload ),
-        }
+      //Si enviamos la propiedad isAdmin: true
+      if ( isAdmin ) {
+        // Asignamos el rol de admin ademas del de user por defecto
+        user.isAdmin = true;
+        user.roles = [ ValidRoles.user, ValidRoles.admin ];
       }
+
+      await this.userRepo.save(user);
+
+      // Generar JWT
+      const payload: JwtPayload = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email
+      }
+
+      return {
+        ...user,
+        token: this.generateJwtToken( payload ),
+      }
+    }
 
   }
 

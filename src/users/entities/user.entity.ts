@@ -40,6 +40,12 @@ export class User {
   })
   password: string;
 
+  @Column({
+    name: 'is_admin',
+    default: false
+  })
+  isAdmin: boolean;
+
   @Column({ 
     name: 'is_active',
     default: true 
