@@ -1,4 +1,6 @@
 import { 
+  BeforeInsert,
+  BeforeUpdate,
   Column, 
   CreateDateColumn, 
   Entity, 
@@ -38,6 +40,12 @@ export class User {
   })
   password: string;
 
+  @Column({ 
+    name: 'is_active',
+    default: true 
+  })
+  isActive: boolean;
+
   @Column({ default: false })
   deleted: boolean;
 
@@ -54,6 +62,16 @@ export class User {
     name: 'updated_at'
   })
   updatedAt: Date;
+
+  @BeforeInsert()
+  checkFieldsBeforeInsert() {
+    this.email = this.email.toLowerCase().trim();
+  }
+
+  @BeforeUpdate()
+  checkFieldsBeforeUpdate() {
+    this.checkFieldsBeforeInsert();
+  }
 
 
 }

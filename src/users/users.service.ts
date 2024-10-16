@@ -1,13 +1,10 @@
 import { 
   BadRequestException, 
   Injectable, 
-  InternalServerErrorException, 
-  Logger, 
   NotFoundException 
 } from '@nestjs/common';
 
-import { 
-  CreateUserDto, 
+import {
   UpdateUserDto, 
   ChangePasswordDto 
 } from './dto';
@@ -19,8 +16,6 @@ import * as argon from 'argon2';
 
 @Injectable()
 export class UsersService {
-
-  private readonly logger = new Logger('UsersService');
 
   constructor(
     @InjectRepository(User)
@@ -40,35 +35,6 @@ export class UsersService {
       },
       order: { createdAt: 'DESC' }
     });
-  }
-
-  async create(createUserDto: CreateUserDto) {
-
-    try {
-
-      // Comprobar si ya existe un usuario con el correo enviado
-      const userExists = await this.findOneByEmail( createUserDto.email );
-
-      if ( !userExists ) {
-        // Encriptar password
-        const hash = await argon.hash(createUserDto.password);
-        
-        const user = this.userRepo.create({
-          firstName: createUserDto.firstName,
-          lastName: createUserDto.lastName,
-          email: createUserDto.email,
-          password: hash
-        });
-
-        await this.userRepo.save(user);
-
-        return user;
-      }
-
-    } catch (error) {
-      this.handleDBExceptions(error);
-    }
-
   }
 
   async findOne(id: string) {
@@ -132,11 +98,4 @@ export class UsersService {
     await this.userRepo.save(user);
   }
 
-  private handleDBExceptions(error: any) {
-    if (error.code === '23505')
-      throw new BadRequestException(error.detail);
-
-    this.logger.error(error)
-    throw new InternalServerErrorException('Unexpected error');
-  }
 }
