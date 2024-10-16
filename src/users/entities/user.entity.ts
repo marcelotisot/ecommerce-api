@@ -46,6 +46,13 @@ export class User {
   })
   isActive: boolean;
 
+  @Column({
+    type: 'text',
+    array: true,
+    default: ['user']
+  })
+  roles: string[];
+
   @Column({ default: false })
   deleted: boolean;
 
