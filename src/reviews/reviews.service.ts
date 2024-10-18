@@ -37,7 +37,7 @@ export class ReviewsService {
     
     const { userId, productId, comment } = createReviewDto;
 
-    const user = await this.usersService.findOne( userId );
+    const user = await this.usersService.findUserById( userId );
     const product = await this.ProductsService.findProductById( productId );
 
     const review = this.reviewRepository.create({

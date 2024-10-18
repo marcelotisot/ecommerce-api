@@ -23,14 +23,14 @@ export class ProductsService {
   
   constructor(
     @InjectRepository(Product)
-    private readonly productRepo: Repository<Product>,
+    private readonly productRepository: Repository<Product>,
     private readonly categoriesService: CategoriesService,
   ) {}
 
   findAllProducts(paginationDto: PaginationDto) {
     const { limit = 10, offset = 0 } = paginationDto;
 
-    return this.productRepo.find({
+    return this.productRepository.find({
       take: limit,
       skip: offset,
       order: { createdAt: 'DESC'},
@@ -41,7 +41,7 @@ export class ProductsService {
   async createProduct(createProductDto: CreateProductDto) {
 
     try {
-      const product = this.productRepo.create({
+      const product = this.productRepository.create({
         title: createProductDto.title,
         description: createProductDto.description,
         price: createProductDto.price,
@@ -58,7 +58,7 @@ export class ProductsService {
         product.category = category;
       }
 
-      await this.productRepo.save(product);
+      await this.productRepository.save(product);
 
       return product;
       
@@ -68,7 +68,7 @@ export class ProductsService {
   }
 
   async findProductById(id: string) {
-    const product = await this.productRepo.findOneBy({id});
+    const product = await this.productRepository.findOneBy({id});
     
     if (!product)
       throw new NotFoundException(`Product with id ${id} not found`);
@@ -79,7 +79,7 @@ export class ProductsService {
   async updateProduct(id: string, updateProductDto: UpdateProductDto) {
     
 
-    const product = await this.productRepo.preload({
+    const product = await this.productRepository.preload({
       id: id,
       ...updateProductDto
     });
@@ -99,7 +99,7 @@ export class ProductsService {
       product.category = category;
     }
     
-    return this.productRepo.save(product);
+    return this.productRepository.save(product);
 
 
   }
@@ -107,7 +107,7 @@ export class ProductsService {
   async deleteProduct(id: string) {
     const product = await this.findProductById(id);
     product.deleted = true;
-    await this.productRepo.save(product);
+    await this.productRepository.save(product);
   }
 
   /*
@@ -117,7 +117,7 @@ export class ProductsService {
   * datos de prueba con el seeder
   */
   async deleteAllProducts() {
-    const query = this.productRepo.createQueryBuilder('product');
+    const query = this.productRepository.createQueryBuilder('product');
 
     try {
       

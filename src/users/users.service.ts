@@ -13,32 +13,33 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as argon from 'argon2';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class UsersService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepo: Repository<User>
+    private readonly userRepository: Repository<User>
   ) {}
 
-  findAll() {
-    return this.userRepo.find({
-      where: { deleted: false },
+  findAllUsers(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    return this.userRepository.find({
+      take: limit,
+      skip: offset,
       select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        email: true,
-        createdAt: true,
-        updatedAt: true
+        id: true, firstName: true, lastName: true,
+        email: true, createdAt: true, updatedAt: true
       },
-      order: { createdAt: 'DESC' }
+      order: { createdAt: 'DESC' },
+      where: { deleted: false }
     });
   }
 
-  async findOne(id: string) {
-    const user = await this.userRepo.findOneBy({ id });
+  async findUserById(id: string) {
+    const user = await this.userRepository.findOneBy({ id });
 
     if (!user)
       throw new NotFoundException(`User with id ${ id } not found`);
@@ -46,20 +47,20 @@ export class UsersService {
     return user;
   }
 
-  async findOneByEmail(email: string) {
+  async findUserByEmail(email: string) {
 
-    const user = await this.userRepo.findOneBy({ email });
+    const user = await this.userRepository.findOneBy({ email });
 
-    if (user) 
-      throw new BadRequestException(`User with email ${ email } already exists`);
+    if (!user) 
+      throw new NotFoundException(`User with email ${ email } not found`);
 
     return user;
 
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
+  async updateUser(id: string, updateUserDto: UpdateUserDto) {
 
-    const user = await this.userRepo.preload({
+    const user = await this.userRepository.preload({
       id: id,
       ...updateUserDto
     });
@@ -67,13 +68,13 @@ export class UsersService {
     if (!user) 
       throw new NotFoundException(`User with id ${id} not found`);
 
-    return this.userRepo.save(user);
+    return this.userRepository.save(user);
 
   }
 
-  async changePassword(id: string, changePasswordDto: ChangePasswordDto) {
+  async changeUserPassword(id: string, changePasswordDto: ChangePasswordDto) {
 
-    const user = await this.findOne(id);
+    const user = await this.findUserById(id);
 
     // Verificar el password anterior con el enviado
     const oldPasswordMatch = await argon.verify(
@@ -88,14 +89,14 @@ export class UsersService {
       );
     }
 
-    return this.userRepo.save(user);
+    return this.userRepository.save(user);
 
   }
 
-  async remove(id: string) {
-    const user = await this.findOne(id);
+  async deleteUser(id: string) {
+    const user = await this.findUserById(id);
     user.deleted = true;
-    await this.userRepo.save(user);
+    await this.userRepository.save(user);
   }
 
 }
