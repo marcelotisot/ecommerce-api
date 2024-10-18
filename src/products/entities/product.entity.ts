@@ -46,7 +46,7 @@ export class Product {
   @ManyToOne(
     () => Category,
     (category) => category.products,
-    { onDelete: "SET NULL" }
+    { onDelete: "SET NULL", eager: true}
   )
   category: Category;
 

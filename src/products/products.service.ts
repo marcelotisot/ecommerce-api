@@ -14,6 +14,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { Repository } from 'typeorm';
 import slugify from 'slugify';
 import { CategoriesService } from '../categories/categories.service';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -26,14 +27,18 @@ export class ProductsService {
     private readonly categoriesService: CategoriesService,
   ) {}
 
-  findAll() {
+  findAllProducts(paginationDto: PaginationDto) {
+    const { limit = 10, offset = 0 } = paginationDto;
+
     return this.productRepo.find({
-      relations: { category: true },
+      take: limit,
+      skip: offset,
+      order: { createdAt: 'DESC'},
       where: { deleted: false }
     });
   }
 
-  async create(createProductDto: CreateProductDto) {
+  async createProduct(createProductDto: CreateProductDto) {
 
     try {
       const product = this.productRepo.create({
@@ -62,7 +67,7 @@ export class ProductsService {
     }
   }
 
-  async findOne(id: string) {
+  async findProductById(id: string) {
     const product = await this.productRepo.findOneBy({id});
     
     if (!product)
@@ -71,7 +76,7 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: string, updateProductDto: UpdateProductDto) {
+  async updateProduct(id: string, updateProductDto: UpdateProductDto) {
     
 
     const product = await this.productRepo.preload({
@@ -99,8 +104,8 @@ export class ProductsService {
 
   }
 
-  async remove(id: string) {
-    const product = await this.findOne(id);
+  async deleteProduct(id: string) {
+    const product = await this.findProductById(id);
     product.deleted = true;
     await this.productRepo.save(product);
   }
