@@ -1,9 +1,11 @@
+import { Review } from "src/reviews/entities/review.entity";
 import { 
   BeforeInsert,
   BeforeUpdate,
   Column, 
   CreateDateColumn, 
   Entity, 
+  OneToMany, 
   PrimaryGeneratedColumn, 
   UpdateDateColumn 
 } from "typeorm";
@@ -58,6 +60,13 @@ export class User {
     default: ['user']
   })
   roles: string[];
+
+  @OneToMany(
+    () => Review,
+    (review) => review.user,
+    {cascade: true, eager: true}
+  )
+  reviews: Review[];
 
   @Column({ default: false })
   deleted: boolean;

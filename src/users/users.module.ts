@@ -16,7 +16,8 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [UsersService],
   exports: [
     // Usar el repositorio en otros modulos
-    TypeOrmModule
+    TypeOrmModule,
+    UsersService
   ], 
 })
 export class UsersModule {}

@@ -9,6 +9,8 @@ import { SeedModule } from './seed/seed.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { ImagesModule } from './images/images.module';
+import { ReviewsModule } from './reviews/reviews.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -38,7 +40,11 @@ import { ImagesModule } from './images/images.module';
 
     AuthModule,
 
-    ImagesModule
+    ImagesModule,
+
+    ReviewsModule,
+
+    CommonModule
   ],
   controllers: [],
   providers: [],

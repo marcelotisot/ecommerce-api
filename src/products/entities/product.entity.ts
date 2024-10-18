@@ -1,6 +1,7 @@
 import { Category } from "src/categories/entities/category.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Image } from '../../images/entities/image.entity';
+import { Review } from "src/reviews/entities/review.entity";
 
 @Entity({name: 'products'})
 export class Product {
@@ -56,6 +57,13 @@ export class Product {
     {cascade: true, eager: true}
   )
   images?: Image[];
+
+  @OneToMany(
+    () => Review,
+    (review) => review.product,
+    {cascade: true, eager: true}
+  )
+  reviews: Review[];
 
   @CreateDateColumn({
     type: 'timestamp',
