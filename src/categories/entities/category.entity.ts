@@ -16,18 +16,16 @@ export class Category {
   id: string;
 
   @Column({
-    name: 'category_name',
     unique: true,
     nullable: false
   })
-  categoryName: string;
+  name: string;
 
   @Column({ 
-    name: 'category_slug',
     unique: true,
     nullable: true,
   })
-  categorySlug: string;
+  slug: string;
 
   @Column({ default: false })
   deleted: boolean;

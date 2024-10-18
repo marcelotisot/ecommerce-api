@@ -13,6 +13,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
 import slugify from 'slugify';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -21,24 +22,31 @@ export class CategoriesService {
   
   constructor(
     @InjectRepository(Category)
-    private readonly categoryRepo: Repository<Category>
+    private readonly categoryRepository: Repository<Category>
   ) {}
 
-  findAll() {
-    // TODO: Agregar paginacion
-    return this.categoryRepo.find();
+  findAllCategories(paginationDto: PaginationDto) {
+    
+    const { limit = 10, offset = 0 } = paginationDto;
+
+    return this.categoryRepository.find({
+      take: limit,
+      skip: offset,
+
+      where: { deleted: false }
+    });
   }
 
-  async create(createCategoryDto: CreateCategoryDto) {
+  async createCategory(createCategoryDto: CreateCategoryDto) {
 
     try {
 
-      const category = this.categoryRepo.create({
-        categoryName: createCategoryDto.categoryName.toLowerCase().trim(),
-        categorySlug: slugify(createCategoryDto.categoryName, '_').toLowerCase()
+      const category = this.categoryRepository.create({
+        name: createCategoryDto.name.toLowerCase().trim(),
+        slug: slugify(createCategoryDto.name, '_').toLowerCase()
       });
   
-      await this.categoryRepo.save(category);
+      await this.categoryRepository.save(category);
 
       return category;
      
@@ -48,8 +56,8 @@ export class CategoriesService {
 
   }
 
-  async findOne(id: string) {
-    const category = await this.categoryRepo.findOneBy({id});
+  async findCategoryById(id: string) {
+    const category = await this.categoryRepository.findOneBy({id});
 
     if (!category)
       throw new NotFoundException(`Category with id ${id} not found`);
@@ -57,12 +65,12 @@ export class CategoriesService {
     return category;
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto) {
+  async updateCategory(id: string, updateCategoryDto: UpdateCategoryDto) {
 
-    updateCategoryDto.categoryName = updateCategoryDto.categoryName.toLowerCase().trim();
+    updateCategoryDto.name = updateCategoryDto.name.toLowerCase().trim();
 
     // Buscar categoria y cargar las propiedades de updateCategoryDto
-    const category = await this.categoryRepo.preload({
+    const category = await this.categoryRepository.preload({
       id: id,
       ...updateCategoryDto
     });
@@ -71,16 +79,16 @@ export class CategoriesService {
       throw new NotFoundException(`Category with id ${id} not found`);
 
     // Generar nuevo slug
-    category.categorySlug = slugify(updateCategoryDto.categoryName, '_').toLowerCase()
+    category.slug = slugify(updateCategoryDto.name, '_').toLowerCase()
 
-    return this.categoryRepo.save(category);
+    return this.categoryRepository.save(category);
       
   }
 
-  async remove(id: string) {
-    const category = await this.findOne(id);
+  async deleteCategory(id: string) {
+    const category = await this.findCategoryById(id);
     category.deleted = true;
-    await this.categoryRepo.save(category);
+    await this.categoryRepository.save(category);
   }
 
   /*
@@ -90,7 +98,7 @@ export class CategoriesService {
   * datos de prueba con el seeder
   */
   async deleteAllCategories() {
-    const query = this.categoryRepo.createQueryBuilder('category');
+    const query = this.categoryRepository.createQueryBuilder('category');
 
     try {
       

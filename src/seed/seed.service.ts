@@ -73,7 +73,7 @@ export class SeedService {
       // TODO:  FIX: Generar slug
       let category = this.categoryRepo.create({
         // Forzar valores unicos
-        categoryName: this.uniqueEnforcer.enforce(() => { 
+        name: this.uniqueEnforcer.enforce(() => {  
           return faker.internet.userName() 
         })
       });

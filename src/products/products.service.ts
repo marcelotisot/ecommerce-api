@@ -46,7 +46,7 @@ export class ProductsService {
       product.slug = slugify(createProductDto.title.trim(), '_').toLowerCase();
 
       if ( createProductDto.categoryId ) {
-        const category = await this.categoriesService.findOne(
+        const category = await this.categoriesService.findCategoryById(
           createProductDto.categoryId
         );
 
@@ -87,7 +87,7 @@ export class ProductsService {
       product.slug = slugify(updateProductDto.title.trim(), '_').toLowerCase();
 
     if ( updateProductDto.categoryId ) {
-      const category = await this.categoriesService.findOne(
+      const category = await this.categoriesService.findCategoryById(
         updateProductDto.categoryId
       );
 
