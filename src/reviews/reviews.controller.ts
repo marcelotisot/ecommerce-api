@@ -47,7 +47,7 @@ export class ReviewsController {
 
   @Delete('delete/:id')
   @Auth()
-  removeReview(@Param('id', ParseUUIDPipe) id: string) {
-    return this.reviewsService.removeReview(id);
+  deleteReview(@Param('id', ParseUUIDPipe) id: string) {
+    return this.reviewsService.deleteReview(id);
   }
 }

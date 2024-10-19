@@ -8,13 +8,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from '../categories/entities/category.entity';
 import { Product } from '../products/entities/product.entity';
 
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { faker } from '@faker-js/faker';
 
 // Forzar valores unicos
 // https://github.com/MansurAliKoroglu/enforce-unique
 import { UniqueEnforcer } from 'enforce-unique';
 import slugify from 'slugify';
+import { CartsService } from '../carts/carts.service';
+import { UsersService } from '../users/users.service';
+import { User } from '../users/entities/user.entity';
+import * as argon from 'argon2';
 
 @Injectable()
 export class SeedService {
@@ -26,6 +30,9 @@ export class SeedService {
     private readonly categoryRepo: Repository<Category>,
     @InjectRepository(Product)
     private readonly productRepo: Repository<Product>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+    // Servicios    
     private readonly categoriesService: CategoriesService,
     private readonly productsService: ProductsService,
   ) {}

@@ -1,3 +1,4 @@
+import { Cart } from "src/carts/entities/cart.entity";
 import { Review } from "src/reviews/entities/review.entity";
 import { 
   BeforeInsert,
@@ -67,6 +68,13 @@ export class User {
     {cascade: true, eager: true}
   )
   reviews: Review[];
+
+  @OneToMany(
+    () => Cart,
+    (cart) => cart.user,
+    { cascade: true, eager: true }
+  )
+  carts: Cart[];
 
   @Column({ default: false })
   deleted: boolean;

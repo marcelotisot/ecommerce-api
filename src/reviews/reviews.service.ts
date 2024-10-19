@@ -72,7 +72,7 @@ export class ReviewsService {
 
   }
 
-  async removeReview(id: string) {
+  async deleteReview(id: string) {
     const review = await this.findReviewById(id);
     review.deleted = true;
     await this.reviewRepository.save(review);

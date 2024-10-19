@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { ImagesModule } from './images/images.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { CommonModule } from './common/common.module';
+import { CartsModule } from './carts/carts.module';
 
 @Module({
   imports: [
@@ -44,7 +45,9 @@ import { CommonModule } from './common/common.module';
 
     ReviewsModule,
 
-    CommonModule
+    CommonModule,
+
+    CartsModule
   ],
   controllers: [],
   providers: [],
