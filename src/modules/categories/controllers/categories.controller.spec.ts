@@ -104,23 +104,15 @@ describe('CategoriesController', () => {
 
     const id = mockCategory.id;
 
-    // Crear mock de response de Express
-    const jsonMock = jest.fn();
-    const statusMock = jest.fn().mockReturnValue({ json: jsonMock });
-    const res: Partial<Response> = {
-      status: statusMock,
-    };
-
     // Llamamos al método y simulamos el comportamiento
-    jest.spyOn(service, 'remove').mockImplementation(async (_id, _res) => {
-      return _res.status(200).json({ message: 'Category deleted' });
+    jest.spyOn(service, 'remove').mockImplementation(async (_id) => {
+      return { message: 'Category deleted' };
     });
 
-    await controller.remove(id, res as Response);
+    const result = await controller.remove(id);
 
-    expect(service.remove).toHaveBeenCalledWith(id, res);
-    expect(statusMock).toHaveBeenCalledWith(HttpStatus.OK);
-    expect(jsonMock).toHaveBeenCalledWith({ message: 'Category deleted' });
+    expect(service.remove).toHaveBeenCalledWith(id);
+    expect(result).toEqual({ message: 'Category deleted' });
 
   });
 

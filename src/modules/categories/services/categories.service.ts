@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
 import { Category } from '../entities/category.entity';
-import { PaginationDto } from '../../../common';
+import { PaginatedResult, PaginationDto } from '../../../common';
 import { Repository } from 'typeorm';
 import { Response } from 'express';
 
@@ -27,7 +27,7 @@ export class CategoriesService {
 
   }
 
-  async findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto): Promise<PaginatedResult<Category>> {
 
     // Paginacion
     const { page = 1, limit = 10} = paginationDto;
@@ -73,6 +73,7 @@ export class CategoriesService {
 
   async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
 
+    // Construir una nueva entidad con los cambios
     const category = await this.repository.preload({
       id,
       ...updateCategoryDto
@@ -86,15 +87,13 @@ export class CategoriesService {
 
   }
 
-  async remove(id: string, res: Response) {
+  async remove(id: string): Promise<{ message: string }> {
 
     const category = await this.findOne(id);
 
     await this.repository.softRemove(category);
 
-    return res.status(HttpStatus.OK).json({ 
-      message: 'Category deleted' 
-    });
+    return { message: 'Category deleted' };
 
   }
   
