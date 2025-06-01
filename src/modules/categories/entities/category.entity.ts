@@ -2,13 +2,13 @@ import {
   BeforeInsert, 
   BeforeUpdate, 
   Column, 
-  Entity 
+  Entity, 
+  OneToMany
 } from "typeorm";
 
 import { BaseEntity } from '../../../common/entities/base.entity';
-
+import { Product } from "../../../modules/products/entities/product.entity";
 import slugify from "slugify";
-
 
 @Entity('categories')
 export class Category extends BaseEntity {
@@ -23,6 +23,13 @@ export class Category extends BaseEntity {
     nullable: true
   })
   slug: string;
+
+  @OneToMany(
+    () => Product,
+    (product) => product.category,
+    { cascade: true }
+  )
+  products: Product[];
 
   @BeforeInsert()
   generateSlugInsert?() {

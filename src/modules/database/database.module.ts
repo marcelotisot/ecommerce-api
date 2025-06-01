@@ -1,8 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+// Variables de entorno
 import { envs } from '../../config';
 
+// Entidades
 import { Category } from '../categories/entities/category.entity';
+import { Product } from '../products/entities/product.entity';
 
 @Module({
   imports: [
@@ -14,7 +18,7 @@ import { Category } from '../categories/entities/category.entity';
       username: envs.dbUsername,
       password: envs.dbPassword,
       database: envs.dbName,
-      entities: [Category],
+      entities: [Category, Product],
       synchronize: true,
       retryAttempts: 3
     }),
