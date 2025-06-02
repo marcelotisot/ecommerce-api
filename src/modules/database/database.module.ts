@@ -7,6 +7,7 @@ import { envs } from '../../config';
 // Entidades
 import { Category } from '../categories/entities/category.entity';
 import { Product } from '../products/entities/product.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { Product } from '../products/entities/product.entity';
       username: envs.dbUsername,
       password: envs.dbPassword,
       database: envs.dbName,
-      entities: [Category, Product],
+      entities: [Category, Product, User],
       synchronize: true,
       retryAttempts: 3
     }),
