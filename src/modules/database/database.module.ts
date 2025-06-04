@@ -9,6 +9,7 @@ import { Category } from '../categories/entities/category.entity';
 import { Product } from '../products/entities/product.entity';
 import { User } from '../users/entities/user.entity';
 import { Cart, CartItem } from '../carts/entities';
+import { Order, OrderItem } from '../orders/entities';
 
 @Module({
   imports: [
@@ -20,7 +21,15 @@ import { Cart, CartItem } from '../carts/entities';
       username: envs.dbUsername,
       password: envs.dbPassword,
       database: envs.dbName,
-      entities: [Category, Product, User, Cart, CartItem],
+      entities: [
+        Category, 
+        Product, 
+        User, 
+        Cart, 
+        CartItem, 
+        Order, 
+        OrderItem
+      ],
       synchronize: true,
       retryAttempts: 3
     }),

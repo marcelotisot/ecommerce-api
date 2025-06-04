@@ -26,7 +26,7 @@ export class CartsService {
     // Buscar el carrito y cargar relaciones
     let cart = await this.cartRepository.findOne({
       where: { user: { id: userId } },
-      relations: ['items', 'items.product']
+      relations: ['user', 'items', 'items.product']
     });
 
     // Si no existe
