@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UsersService } from './users.service';
 import { User } from '../entities/user.entity';
@@ -19,6 +20,7 @@ import { CreateUserDto } from '../dto';
 import * as argon from 'argon2';
 import { ValidRoles } from '../../../modules/auth/interfaces';
 
+
 jest.mock('argon2'); // Mock dependencia argon2
 
 describe('UsersService', () => {
@@ -27,6 +29,9 @@ describe('UsersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+      ],
       providers: [
         UsersService,
         {
