@@ -1,4 +1,4 @@
-import { PaginatedResult } from "src/common";
+import { PaginatedResult } from "../../../common";
 import { User } from "../entities/user.entity";
 
 export const mockPaginatedUsers: PaginatedResult<User> = {
