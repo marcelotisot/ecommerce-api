@@ -13,7 +13,7 @@ import {
   mockCategoriesService,
   mockCategory, 
   mockPaginatedCategories 
-} from '../__mocks__';
+} from '../__mocks__/categories';
 
 describe('CategoriesController', () => {
 

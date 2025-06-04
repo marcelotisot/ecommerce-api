@@ -9,7 +9,7 @@ import {
   mockCategory, 
   mockCategoryRepository, 
   mockPaginatedCategories
-} from '../__mocks__';
+} from '../__mocks__/categories';
 
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
 import { PaginationDto } from '../../../common';

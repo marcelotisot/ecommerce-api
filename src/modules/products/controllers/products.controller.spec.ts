@@ -12,9 +12,9 @@ import {
   mockPaginatedProducts,
   mockProduct, 
   mockProductsService 
-} from '../__mocks__';
+} from '../__mocks__/products';
 
-import { mockCategoriesService } from '../../../modules/categories/__mocks__';
+import { mockCategoriesService } from '../../../modules/categories/__mocks__/categories';
 
 import { PaginationDto } from '../../../common';
 
