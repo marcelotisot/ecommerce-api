@@ -14,6 +14,12 @@ import {
   mockPaginatedUsers,
   mockUser
  } from '../__mocks__/users';
+import { CreateUserDto } from '../dto';
+
+import * as argon from 'argon2';
+import { ValidRoles } from '../../../modules/auth/interfaces';
+
+jest.mock('argon2'); // Mock dependencia argon2
 
 describe('UsersService', () => {
 
@@ -38,6 +44,54 @@ describe('UsersService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  /**
+   * Test create()
+   */
+  it('should hash the password and create user', async () => {
+
+    const dto: CreateUserDto = {
+      fullName: 'Test user',
+      email: 'testuser@google.com',
+      password: 'Abc123',
+      roles: [ValidRoles.user]
+    };
+
+    // Le decimos al mock de argon.hash que cuando se llame, devuelva "hashed123"
+    const hashedPassword = 'hashed123';
+    (argon.hash as jest.Mock).mockResolvedValue(hashedPassword);
+
+    /**
+     * Simulamos que el create() devuelve un usuario ya listo para guardar
+     * Y que save() lo guarda y le asigna un ID
+     */
+    const mockUserCreated = { ...dto, password: hashedPassword };
+
+    mockUserRepository.create?.mockReturnValue(mockUserCreated);
+    mockUserRepository.save?.mockResolvedValue({ 
+      id: '551e0d10-473d-49b2-b8aa-16465abb2f7f', ...mockUserCreated 
+    });
+
+    const result = await service.create(dto);
+
+    // Verificamos que el hash se generó correctamente
+    expect(argon.hash).toHaveBeenCalledWith('Abc123');
+
+    // Verificamos que se llamó a create() con el objeto correcto (contraseña hasheada incluida)
+    expect(mockUserRepository.create).toHaveBeenCalledWith({
+      fullName: 'Test user',
+      email: 'testuser@google.com',
+      password: hashedPassword,
+      roles: [ValidRoles.user]
+    });
+
+    // Verificamos que se guardó el usuario
+    expect(mockUserRepository.save).toHaveBeenCalledWith(mockUserCreated);
+
+    // Verificamos que lo que devuelve el servicio es lo que esperábamos: un objeto con ID y los datos del usuario
+    expect(result).toEqual({ id: '551e0d10-473d-49b2-b8aa-16465abb2f7f', ...mockUserCreated });
+    
   });
 
   /**

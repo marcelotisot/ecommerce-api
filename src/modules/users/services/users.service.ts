@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 
@@ -9,6 +8,10 @@ import {
   PaginationDto 
 } from '../../../common';
 
+import { CreateUserDto, UpdateUserDto } from '../dto';
+
+import * as argon from 'argon2';
+
 @Injectable()
 export class UsersService {
 
@@ -16,6 +19,22 @@ export class UsersService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
   ) {}
+
+  // Registrar usuario / Panel de administracion
+  async create(createUserDto: CreateUserDto) {
+
+    const { fullName, email, password, roles } = createUserDto;
+
+    const user = this.userRepository.create({
+      fullName,
+      email,
+      roles,
+      password: await argon.hash(password)
+    });
+
+    return this.userRepository.save(user);
+
+  }
 
   async findAll(paginationDto: PaginationDto): Promise<PaginatedResult<User>> {
 

@@ -12,6 +12,7 @@ import {
   mockUser, 
   mockUsersService 
 } from '../__mocks__/users';
+import { CreateUserDto } from '../dto';
 
 
 
@@ -40,6 +41,23 @@ describe('UsersController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+  });
+
+  it('should call service create method with valid dto and return created user', async () => {
+
+    const dto: CreateUserDto = {
+      fullName: 'Test user',
+      email: 'testuser@google.com',
+      password: 'Abc123'
+    };
+
+    jest.spyOn(service, 'create').mockResolvedValue(mockUser);
+
+    const result = await controller.create(dto);
+
+    expect(result).toEqual(mockUser);
+    expect(service.create).toHaveBeenCalledWith(dto);
+
   });
 
   it('should call service findAll method with paginationDto and return paginated users', async () => {
