@@ -1,12 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Order, OrderItem } from '../entities';
 import { Repository } from 'typeorm';
 import { CartsService } from '../../../modules/carts/services/carts.service';
 import { PaginatedResult, PaginationDto } from '../../../common';
+import { OrderStatus } from '../enums/order-status.enum';
 
 @Injectable()
 export class OrdersService {
+
+  private readonly logger = new Logger('OrdersService');
   
   constructor(
     @InjectRepository(Order)
@@ -90,6 +93,47 @@ export class OrdersService {
         current_page: Number(page),
         last_page: lastPage
       }
+    }
+
+  }
+
+  async findById(id: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id },
+      relations: ['items', 'items.product']
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order with id ${id} not found`);
+    }
+
+    return order;
+  }
+
+  /**
+   * Actualiza el estado de la orden segun el estado recibido
+   * por el webhook de mercadopago
+   * @param orderId 
+   * @param status 
+   */
+  async updateOrderStatus(orderId: any, status: string) {
+
+    const order = await this.findById(orderId);
+
+    const validStatuses = {
+      paid: OrderStatus.paid,
+      pending: OrderStatus.pending,
+      rejected: OrderStatus.rejected,
+    };
+
+    if (status in validStatuses) {
+
+      this.logger.log(`Estado recibido:`, status);
+
+      await this.orderRepository.update(order.id, {
+        status: validStatuses[status as keyof typeof validStatuses],
+      });
+      
     }
 
   }

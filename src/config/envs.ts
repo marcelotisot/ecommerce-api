@@ -9,6 +9,7 @@ interface EnvVars {
   DB_PASSWORD: string
   DB_NAME: string;
   JWT_SECRET: string;
+  MERCADOPAGO_ACCESS_TOKEN: string;
 }
 
 // Validar el esquema
@@ -20,6 +21,7 @@ const envsSchema = joi.object({
   DB_PASSWORD: joi.string().required(),
   DB_NAME: joi.string().required(),
   JWT_SECRET: joi.string().required(),
+  MERCADOPAGO_ACCESS_TOKEN: joi.string().required(),
 })
 .unknown(true);
 
@@ -40,4 +42,5 @@ export const envs = {
   dbPassword: envVars.DB_PASSWORD,
   dbName: envVars.DB_NAME,
   jwtSecret: envVars.JWT_SECRET,
+  mercadopagoAccessToken: envVars.MERCADOPAGO_ACCESS_TOKEN,
 }

@@ -3,6 +3,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { envs } from './config';
 import { TypeORMExceptionFilter } from './common';
+import * as bodyParser from 'body-parser';
 
 export async function bootstrap() {
   const logger = new Logger('Main bootstrap');
@@ -10,6 +11,9 @@ export async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api/v1');
+
+  // Importante para MercadoPago
+  app.use(bodyParser.urlencoded({ extended: true })); 
 
   app.useGlobalPipes(
     new ValidationPipe({
