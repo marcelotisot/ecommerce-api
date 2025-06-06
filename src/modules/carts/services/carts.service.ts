@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cart, CartItem } from '../entities';
 import { Repository } from 'typeorm';
@@ -45,7 +45,7 @@ export class CartsService {
   }
 
   /**
-   * Agregar productos al carrito
+   * Agregar productos al carrito y comprobar stock suficiente
    * Si ya existe el producto aumenta la cantidad
    * @param userId 
    * @param addToCartdto 
@@ -59,27 +59,47 @@ export class CartsService {
     const cart = await this.getCartByUser(userId);
 
     // Obtenemos el producto que se va a agregar
-    const product = await this.productRepository.findOneByOrFail({ id: productId });
+    const product = await this.productRepository.findOne({
+      where: { id: productId }
+    });
 
-    // Buscamos el item validando con el ID del producto
-    let item = cart.items.find(i => i.product.id === productId);
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
 
-    if (item) {
+    // Buscar si el producto ya existe en el carrito del usuario
+    let cartItem = await this.cartItemRepository.findOne({
+      where: { 
+        product: { id: product.id },
+        cart: { id: cart.id}
+      },
+      relations: ['product', 'cart']
+    });
+
+    // Cantidad actual + cantidad que se quiere agregar
+    const totalRequested = (cartItem?.quantity || 0) + quantity;
+
+    // Comprobamos el stock
+    if (product.stock < totalRequested ) {
+      throw new BadRequestException('The product does not have sufficient stock');
+    } 
+
+    if (cartItem) {
 
       // Aumentamos la cantidad
-      item.quantity += quantity;
-
-      return this.cartItemRepository.save(item);
+      cartItem.quantity += quantity;
+   
+      return this.cartItemRepository.save(cartItem);
 
     } else {
 
       // Creamos un nuevo item
-      item = this.cartItemRepository.create({ product, quantity, cart });
+      cartItem = this.cartItemRepository.create({ product, quantity, cart });
 
       // Incrementamos el total de items en el carrito en 1
       await this.cartRepository.increment({id: cart.id}, 'totalItems', 1);
 
-      return this.cartItemRepository.save(item);
+      return this.cartItemRepository.save(cartItem);
 
     }
 
