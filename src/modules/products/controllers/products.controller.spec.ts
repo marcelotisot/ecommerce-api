@@ -17,6 +17,7 @@ import {
 import { mockCategoriesService } from '../../../modules/categories/__mocks__/categories';
 
 import { PaginationDto } from '../../../common';
+import { PassportModule } from '@nestjs/passport';
 
 describe('ProductsController', () => {
 
@@ -26,6 +27,9 @@ describe('ProductsController', () => {
   beforeEach(async () => {
 
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+      ],
       controllers: [ProductsController],
       providers: [  
         {
