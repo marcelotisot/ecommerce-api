@@ -19,6 +19,7 @@ import {
   mockCategory, 
   mockCategoryRepository 
 } from '../../../modules/categories/__mocks__/categories';
+import { ProductImage } from '../entities';
 
 describe('ProductsService', () => {
 
@@ -39,6 +40,10 @@ describe('ProductsService', () => {
         {
           provide: getRepositoryToken(Product),
           useValue: mockProductRepository
+        },
+        {
+          provide: getRepositoryToken(ProductImage),
+          useValue: {}
         },
         {
           provide: getRepositoryToken(Category),
