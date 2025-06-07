@@ -19,7 +19,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
     AuthModule,
     CartsModule,
     OrdersModule,
-    PaymentsModule,
+    PaymentsModule
   ]
 })
 export class AppModule {}

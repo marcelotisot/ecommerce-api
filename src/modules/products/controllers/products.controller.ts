@@ -7,12 +7,16 @@ import {
   Param, 
   Delete, 
   Query, 
-  ParseUUIDPipe 
+  ParseUUIDPipe, 
+  UseInterceptors,
+  BadRequestException,
+  UploadedFile
 } from '@nestjs/common';
 
 import { ProductsService } from '../services/products.service';
 import { CreateProductDto, UpdateProductDto } from '../dto';
 import { PaginationDto } from '../../../common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
@@ -44,5 +48,34 @@ export class ProductsController {
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
+  }
+
+  @Post(':productId/images/upload')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 5 * 1024 * 1024, // 5 MB
+      },
+      fileFilter: (req, file, cb) => {
+        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          cb(null, true);
+        } else {
+          cb(new BadRequestException('Tipo de archivo no permitido'), false);
+        }
+      },
+    }),
+  )
+  async uploadProductImage(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('productId', ParseUUIDPipe) productId: string,
+  ) {
+    if (!file) {
+      throw new BadRequestException('No se subió ningún archivo o es inválido');
+    }
+
+    const url = await this.productsService.uploadProductImage(productId, file);
+    
+    return { url };
   }
 }

@@ -6,7 +6,7 @@ import { envs } from '../../config';
 
 // Entidades
 import { Category } from '../categories/entities/category.entity';
-import { Product } from '../products/entities/product.entity';
+import { Product, ProductImage } from '../products/entities';
 import { User } from '../users/entities/user.entity';
 import { Cart, CartItem } from '../carts/entities';
 import { Order, OrderItem } from '../orders/entities';
@@ -23,7 +23,8 @@ import { Order, OrderItem } from '../orders/entities';
       database: envs.dbName,
       entities: [
         Category, 
-        Product, 
+        Product,
+        ProductImage,
         User, 
         Cart, 
         CartItem, 

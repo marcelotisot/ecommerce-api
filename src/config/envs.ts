@@ -10,6 +10,9 @@ interface EnvVars {
   DB_NAME: string;
   JWT_SECRET: string;
   MERCADOPAGO_ACCESS_TOKEN: string;
+  AWS_ACCESS_KEY_ID: string;
+  AWS_SECRET_ACCESS_KEY: string;
+  AWS_S3_BUCKET_NAME: string;
 }
 
 // Validar el esquema
@@ -22,6 +25,9 @@ const envsSchema = joi.object({
   DB_NAME: joi.string().required(),
   JWT_SECRET: joi.string().required(),
   MERCADOPAGO_ACCESS_TOKEN: joi.string().required(),
+  AWS_ACCESS_KEY_ID: joi.string().required(),
+  AWS_SECRET_ACCESS_KEY: joi.string().required(),
+  AWS_S3_BUCKET_NAME: joi.string().required(),
 })
 .unknown(true);
 
@@ -43,4 +49,7 @@ export const envs = {
   dbName: envVars.DB_NAME,
   jwtSecret: envVars.JWT_SECRET,
   mercadopagoAccessToken: envVars.MERCADOPAGO_ACCESS_TOKEN,
+  awsAccessKeyId: envVars.AWS_ACCESS_KEY_ID,
+  awsSecretAccessKey: envVars.AWS_SECRET_ACCESS_KEY,
+  awsS3BucketName: envVars.AWS_S3_BUCKET_NAME,
 }

@@ -4,11 +4,13 @@ import {
   Column, 
   Entity, 
   JoinColumn, 
-  ManyToOne 
+  ManyToOne, 
+  OneToMany
 } from "typeorm";
 
 import { BaseEntity } from "../../../common";
 import { Category } from "../../../modules/categories/entities/category.entity";
+import { ProductImage } from './product-image.entity';
 import slugify from "slugify";
 
 @Entity('products')
@@ -48,6 +50,13 @@ export class Product extends BaseEntity {
       name: 'category_id'
   })
   category?: Category;
+
+  @OneToMany(
+    () => ProductImage,
+    (productImage) => productImage.product,
+    { cascade: true, eager: true }
+  )
+  images: ProductImage[];
 
   @BeforeInsert()
   generateSlugInsert?() {
