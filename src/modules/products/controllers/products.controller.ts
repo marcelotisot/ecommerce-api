@@ -17,12 +17,15 @@ import { ProductsService } from '../services/products.service';
 import { CreateProductDto, UpdateProductDto } from '../dto';
 import { PaginationDto } from '../../../common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Auth } from '../../../modules/auth/decorators';
+import { ValidRoles } from '../../../modules/auth/interfaces';
 
 @Controller('products')
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Post()
+  @Auth(ValidRoles.admin)
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
@@ -38,6 +41,7 @@ export class ProductsController {
   }
 
   @Patch(':id')
+  @Auth(ValidRoles.admin)
   update(
     @Param('id', ParseUUIDPipe) id: string, 
     @Body() updateProductDto: UpdateProductDto
@@ -46,11 +50,13 @@ export class ProductsController {
   }
 
   @Delete(':id')
+  @Auth(ValidRoles.admin)
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.productsService.remove(id);
   }
 
   @Post(':productId/images/upload')
+  @Auth(ValidRoles.admin)
   @UseInterceptors(
     FileInterceptor('file', {
       limits: {
