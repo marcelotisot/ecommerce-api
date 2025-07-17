@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { envs } from '@config/envs';
+import { Category } from '@modules/categories/entities/category.entity';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { envs } from '@config/envs';
       username: envs.dbUser,
       password: envs.dbPassword,
       database: envs.dbName,
-      entities: [],
+      entities: [Category],
       synchronize: true,
     })
   ]
