@@ -7,7 +7,7 @@ import { Product } from '../entities/product.entity';
 import { CategoriesService } from '@modules/categories/services/categories.service';
 import { Category } from '@modules/categories/entities/category.entity';
 import { CreateProductDto, UpdateProductDto } from '../dto';
-import { mockProductRepository } from '../__mocks__';
+import { mockProductRepository } from '../__mocks__/products';
 
 describe('ProductsService', () => {
 

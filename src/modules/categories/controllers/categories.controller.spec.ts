@@ -5,7 +5,7 @@ import { CategoriesService } from '../services/categories.service';
 import { Category } from '../entities/category.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
 import { PaginationDto } from '@common/dto/pagination.dto';
-import { mockCategoriesService } from '../__mocks__';
+import { mockCategoriesService } from '../__mocks__/categories';
 
 describe('CategoriesController', () => {
 

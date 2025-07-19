@@ -6,7 +6,7 @@ import { Category } from '../entities/category.entity';
 import { Repository } from 'typeorm';
 
 // Mocks
-import { mockCategory, mockCategoryRepository } from '../__mocks__';
+import { mockCategory, mockCategoryRepository } from '../__mocks__/categories';
 
 describe('CategoriesService', () => {
 
