@@ -15,6 +15,9 @@ import { Product } from '@modules/products/entities/product.entity';
       database: envs.dbName,
       entities: [Category, Product],
       synchronize: true,
+
+      // Solo aplica dropSchema en true si NODE_ENV === 'test
+      dropSchema: process.env.NODE_ENV === 'test', // elimina todas las tablas antes de cada suite de test
     })
   ]
 })
