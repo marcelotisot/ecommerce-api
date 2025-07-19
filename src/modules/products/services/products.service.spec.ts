@@ -8,20 +8,14 @@ import { CategoriesService } from '@modules/categories/services/categories.servi
 import { Category } from '@modules/categories/entities/category.entity';
 import { CreateProductDto, UpdateProductDto } from '../dto';
 
+// Mocks
+import { mockRepository } from '../../../../test/__mocks__/mock.repository';
+
 describe('ProductsService', () => {
 
   let service: ProductsService;
   let productRepo: jest.Mocked<Repository<Product>>;
   let categoriesService: jest.Mocked<CategoriesService>;
-
-  const mockProductRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
-    findAndCount: jest.fn(),
-    findOneBy: jest.fn(),
-    preload: jest.fn(),
-    softRemove: jest.fn(),
-  };
 
   beforeEach(async () => {
 
@@ -34,7 +28,7 @@ describe('ProductsService', () => {
         },
         {
           provide: getRepositoryToken(Product),
-          useValue: mockProductRepository,
+          useValue: mockRepository,
         },
         {
           provide: getRepositoryToken(Category),

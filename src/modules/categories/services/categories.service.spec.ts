@@ -1,9 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CategoriesService } from './categories.service';
 import { Category } from '../entities/category.entity';
-import { Repository } from 'typeorm';
+
+// Mocks
+import { mockRepository } from '../../../../test/__mocks__/mock.repository';
 
 describe('CategoriesService', () => {
 
@@ -18,14 +21,6 @@ describe('CategoriesService', () => {
     updatedAt: new Date(),
   } as Category;
 
-  const mockCategoryRepository = {
-    create: jest.fn(),
-    save: jest.fn(),
-    findAndCount: jest.fn(),
-    findOneBy: jest.fn(),
-    preload: jest.fn(),
-    softRemove: jest.fn(),
-  };
 
   beforeEach(async () => {
 
@@ -34,7 +29,7 @@ describe('CategoriesService', () => {
         CategoriesService,
         {
           provide: getRepositoryToken(Category),
-          useValue: mockCategoryRepository,
+          useValue: mockRepository,
         }
       ],
     }).compile();
