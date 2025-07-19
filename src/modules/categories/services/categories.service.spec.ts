@@ -5,13 +5,27 @@ import { CategoriesService } from './categories.service';
 import { Category } from '../entities/category.entity';
 import { Repository } from 'typeorm';
 
-// Mocks
-import { mockCategory, mockCategoryRepository } from '../__mocks__/categories';
-
 describe('CategoriesService', () => {
 
   let service: CategoriesService;
   let repository: jest.Mocked<Repository<Category>>;
+
+  const mockCategory = {
+    id: 'uuid-1',
+    name: 'Electronics',
+    slug: 'electronics',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  } as Category;
+
+  const mockCategoryRepository = {
+    create: jest.fn(),
+    save: jest.fn(),
+    findAndCount: jest.fn(),
+    findOneBy: jest.fn(),
+    preload: jest.fn(),
+    softRemove: jest.fn(),
+  };
 
   beforeEach(async () => {
 
@@ -20,7 +34,7 @@ describe('CategoriesService', () => {
         CategoriesService,
         {
           provide: getRepositoryToken(Category),
-          useValue: mockCategoryRepository(),
+          useValue: mockCategoryRepository,
         }
       ],
     }).compile();

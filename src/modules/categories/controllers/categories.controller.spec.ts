@@ -5,12 +5,19 @@ import { CategoriesService } from '../services/categories.service';
 import { Category } from '../entities/category.entity';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
 import { PaginationDto } from '@common/dto/pagination.dto';
-import { mockCategoriesService } from '../__mocks__/categories';
 
 describe('CategoriesController', () => {
 
   let controller: CategoriesController;
   let service: CategoriesService;
+
+  const mockCategoriesService = {
+    createCategory: jest.fn(),
+    findAllCategories: jest.fn(),
+    findCategoryById: jest.fn(),
+    updateCategory: jest.fn(),
+    deleteCategory: jest.fn(),
+  };
 
   beforeEach(async () => {
     
