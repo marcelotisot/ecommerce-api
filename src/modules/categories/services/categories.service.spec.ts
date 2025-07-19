@@ -6,21 +6,13 @@ import { CategoriesService } from './categories.service';
 import { Category } from '../entities/category.entity';
 
 // Mocks
-import { mockRepository } from '../../../../test/__mocks__/mock.repository';
+import { mockRepository } from '../../../../test/__mocks__/common/repository.mock';
+import { mockCategory } from '../../../../test/__mocks__/categories/category.mock';
 
 describe('CategoriesService', () => {
 
   let service: CategoriesService;
   let repository: jest.Mocked<Repository<Category>>;
-
-  const mockCategory = {
-    id: 'uuid-1',
-    name: 'Electronics',
-    slug: 'electronics',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  } as Category;
-
 
   beforeEach(async () => {
 

@@ -9,7 +9,8 @@ import { Category } from '@modules/categories/entities/category.entity';
 import { CreateProductDto, UpdateProductDto } from '../dto';
 
 // Mocks
-import { mockRepository } from '../../../../test/__mocks__/mock.repository';
+import { mockRepository } from '../../../../test/__mocks__/common/repository.mock';
+import { mockProduct, mockProducts } from '../../../../test/__mocks__/productos/products.mock';
 
 describe('ProductsService', () => {
 
@@ -101,17 +102,11 @@ describe('ProductsService', () => {
 
     it('should return a product by id', async () => {
 
-      const product: Product = { 
-        id: 'prod1', 
-        title: 'Product', 
-        price: 50 
-      } as Product;
-
-      productRepo.findOneBy.mockResolvedValue(product);
+      productRepo.findOneBy.mockResolvedValue(mockProduct);
 
       const result = await service.findProductById('prod1');
 
-      expect(result).toEqual(product);
+      expect(result).toEqual(mockProduct);
 
     });
 
@@ -168,17 +163,12 @@ describe('ProductsService', () => {
 
   it('should return paginated products', async () => {
 
-    const products: Product[] = [
-      { id: '1', title: 'P1', price: 10 } as Product,
-      { id: '2', title: 'P2', price: 20 } as Product,
-    ];
-
-    productRepo.findAndCount.mockResolvedValue([products, 2]);
+    productRepo.findAndCount.mockResolvedValue([mockProducts, 2]);
 
     const result = await service.findAllProducts({ limit: 2, page: 1 });
 
     expect(result).toEqual({
-      data: products,
+      data: mockProducts,
       total: 2,
       per_page: 2,
       current_page: 1,
