@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { envs } from '@config/envs';
 import { Category } from '@modules/categories/entities/category.entity';
 import { Product } from '@modules/products/entities/product.entity';
+import { User } from '@modules/users/entities/user.entity';
 
 @Module({
   imports: [
@@ -13,7 +14,7 @@ import { Product } from '@modules/products/entities/product.entity';
       username: envs.dbUser,
       password: envs.dbPassword,
       database: envs.dbName,
-      entities: [Category, Product],
+      entities: [Category, Product, User],
       synchronize: true,
 
       // Solo aplica dropSchema en true si NODE_ENV === 'test
