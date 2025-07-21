@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { PassportModule } from '@nestjs/passport';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CategoriesController } from './categories.controller';
 import { CategoriesService } from '../services/categories.service';
@@ -22,6 +23,11 @@ describe('CategoriesController', () => {
   beforeEach(async () => {
     
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        PassportModule.register({
+          defaultStrategy: 'jwt'
+        }),
+      ],
       controllers: [CategoriesController],
       providers: [
         {
