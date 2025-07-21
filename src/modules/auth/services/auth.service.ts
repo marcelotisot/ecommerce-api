@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { LoginUserDto, RegisterUserDto } from '../dto';
+import { 
+  BadRequestException, 
+  Injectable, 
+  UnauthorizedException 
+} from '@nestjs/common';
+
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@modules/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { AuthResponse } from '../interfaces';
+import { LoginUserDto, RegisterUserDto } from '../dto';
+import { AuthResponse, JwtPayload } from '../interfaces';
 import * as argon from 'argon2';
 
 @Injectable()
@@ -11,7 +17,8 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async registerUser(registerUserDto: RegisterUserDto): Promise<AuthResponse> {
@@ -34,11 +41,12 @@ export class AuthService {
     // Excluir el password
     const { password: __, ...rest } = newUser;
 
+    const payload = this.generatePayload(newUser);
+
     return {
       user: rest,
-      token: 'ASDSADASDASDASDASDSAADSAasdkandkasdnksd1231231asd'
+      token: this.generateToken(payload)
     }
-
 
   }
 
@@ -72,11 +80,35 @@ export class AuthService {
     // Excluir el password
     const { password: __, ...rest } = user;
 
+    const payload = this.generatePayload(user);
+
     return {
       user: rest,
-      token: 'ASDSADASDASDASDASDSAADSAasdkandkasdnksd1231231asd'
+      token: this.generateToken(payload)
     }
 
+  }
+
+  private generateToken(payload: JwtPayload) {
+
+    const token = this.jwtService.sign(payload);
+
+    return token;
+
+  }
+
+  // Generar y retornar el payload a firmar
+  private generatePayload(user: User): JwtPayload {
+
+    const payload: JwtPayload = {
+      id: user.id,
+      fullName: user.fullName,
+      email: user.email,
+      isActive: user.isActive,
+      roles: user.roles,
+    };
+
+    return payload;
 
   }
 
